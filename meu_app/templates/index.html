@@ -1,19 +1,19 @@
-{% load static %}
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href=" {% static "css/style.css" %}">
-    <title>Index</title>
-</head>
-<body>
-    
-    <h1> Django Rodando - Conteúdo da Index </h1>
+{% block title %}Início{% endblock %}
 
-
- 
-
-</body>
-</html>
+{% block content %}
+    <section class="hero">
+        <h1>Sistema de Cadastro de Produtos</h1>
+        <p>Gerencie seus produtos de forma simples: cadastre, edite, pesquise e organize seu estoque.</p>
+        <div class="hero-actions">
+            {% if user.is_authenticated %}
+                <a href="{% url 'product_list' %}" class="btn btn-primary">Ver produtos</a>
+                <a href="{% url 'product_create' %}" class="btn btn-outline">Cadastrar produto</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary">Entrar</a>
+                <a href="{% url 'signup' %}" class="btn btn-outline">Criar conta</a>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

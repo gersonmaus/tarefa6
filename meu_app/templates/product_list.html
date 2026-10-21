@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Produtos{% endblock %}
+
+{% block content %}
+    <section class="card">
+        <div class="card-header">
+            <h2>Produtos</h2>
+            <a href="{% url 'product_create' %}" class="btn btn-primary">+ Novo produto</a>
+        </div>
+
+        <form method="get" class="toolbar">
+            <input type="text" name="search" value="{{ search }}" placeholder="Pesquisar pelo nome...">
+            <select name="order">
+                <option value="asc" {% if order == "asc" %}selected{% endif %}>Nome (A-Z)</option>
+                <option value="desc" {% if order == "desc" %}selected{% endif %}>Nome (Z-A)</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+            {% if search %}<a href="{% url 'product_list' %}" class="btn btn-outline">Limpar</a>{% endif %}
+        </form>
+
+        {% if products %}
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Descrição</th>
+                            <th>Preço</th>
+                            <th>Quantidade</th>
+                            <th>Cadastro</th>
+                            <th class="actions-col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                            <tr>
+                                <td class="strong">{{ product.name }}</td>
+                                <td class="muted">{{ product.description|default:"-"|truncatechars:60 }}</td>
+                                <td>R$ {{ product.price|floatformat:2 }}</td>
+                                <td>{{ product.quantity }}</td>
+                                <td>{{ product.created_at|date:"d/m/Y H:i" }}</td>
+                                <td class="actions">
+                                    <a href="{% url 'product_update' product.pk %}" class="btn btn-sm btn-outline">Editar</a>
+                                    <form action="{% url 'product_delete' product.pk %}" method="post" class="inline-form" onsubmit="return confirm('Deseja realmente excluir o produto {{ product.name|escapejs }}?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty">Nenhum produto encontrado.</p>
+        {% endif %}
+    </section>
+{% endblock %}
